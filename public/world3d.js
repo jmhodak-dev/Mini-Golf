@@ -47,8 +47,21 @@ export class World3D {
  }
  buildCourseFeatures(level,id){
   // A wide, arched bridge is both an easier route over walls and a real 3D surface.
-  for(const ramp of level.ramps||[]){const positions=[],indices=[];const segments=20;for(let i=0;i<=segments;i++){const y=ramp.y+ramp.h*i/segments,h=6+Math.sin(i/segments*Math.PI)*ramp.height;positions.push(ramp.x-250,h,y-290,ramp.x+ramp.w-250,h,y-290);if(i<segments){const a=i*2;indices.push(a,a+1,a+2,a+1,a+3,a+2)}}const geo=new THREE.BufferGeometry();geo.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));geo.setIndex(indices);geo.computeVertexNormals();const m=this.mesh(geo,id===13?'#e5f3ee':id===1||id===8?'#e8b85f':'#e9d5a0');m.material.side=THREE.DoubleSide;for(const side of [0,1])for(let i=0;i<segments;i++){const y0=ramp.y+ramp.h*i/segments,y1=ramp.y+ramp.h*(i+1)/segments,h0=10+Math.sin(i/segments*Math.PI)*ramp.height,h1=10+Math.sin((i+1)/segments*Math.PI)*ramp.height,x=ramp.x+side*ramp.w-250;this.link([x,h0,y0-290],[x,h1,y1-290],2,'#fff0c5')}for(const y of [ramp.y+ramp.h*.25,ramp.y+ramp.h*.75])for(const side of [0,1]){const h=groundHeight(level,ramp.x+1,y);this.cylinder(ramp.x+side*ramp.w-250,h/2,y-290,3,3,h,this.palette[2],this.root,8)}}
-  for(const tunnel of level.tunnels||[]){const g=this.group(tunnel.x+tunnel.w/2-250,0,tunnel.y+tunnel.h/2-290),color=id===2?'#a495c1':id===13?'#e3f2ed':id===9?'#a5cfc2':'#d4c394';for(const side of [-1,1])this.box(side*(tunnel.w/2-5),28,0,12,56,tunnel.h,color,g);const arch=this.mesh(new THREE.TorusGeometry(tunnel.w/2-5,7,8,24,Math.PI),color,g);arch.position.set(0,50,tunnel.h/2);const back=arch.clone();back.geometry=arch.geometry;back.position.z=-tunnel.h/2;g.add(back);this.box(0,tunnel.height+24,0,tunnel.w+8,10,tunnel.h,color,g);this.eyes(g,0,tunnel.height+23,tunnel.h/2+5,5);this.friendly(g,id===2?'SPOOKY SHORTCUT!':'THROUGH THE TUNNEL!')}
+  for(const r of level.ramps||[]){
+   const segments=40,positions=[],indices=[],height=t=>6+Math.sin(t*Math.PI)**2*r.height;
+   for(let i=0;i<=segments;i++){const t=i/segments;positions.push(r.x-250,height(t),r.y+r.h*t-290,r.x+r.w-250,height(t),r.y+r.h*t-290);if(i<segments){const a=i*2;indices.push(a,a+2,a+1,a+1,a+2,a+3)}}
+   const geo=new THREE.BufferGeometry();geo.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));geo.setIndex(indices);geo.computeVertexNormals();this.mesh(geo,'#9a744b',this.root,{side:THREE.DoubleSide,roughness:.92});
+   for(let i=0;i<segments;i++){const t=(i+.5)/segments,y=r.y+r.h*t-290,h=height(t),slope=Math.atan(Math.PI*r.height/r.h*Math.sin(2*Math.PI*t));
+    const plank=this.box(r.x+r.w/2-250,h-1.5,y,r.w,3,r.h/segments-.5,i%3?'#aa8456':'#967147');plank.rotation.x=slope;
+    for(const side of [0,1]){const x=r.x+side*r.w-250,y0=r.y+r.h*i/segments-290,y1=r.y+r.h*(i+1)/segments-290;
+     this.link([x,height(i/segments)+5,y0],[x,height((i+1)/segments)+5,y1],5,'#62533f');
+     this.link([x,height(i/segments)+28,y0],[x,height((i+1)/segments)+28,y1],3,'#bb9b6c');
+     if(i%5===0){this.box(x,h+15,y,6,34,6,'#796044');this.sphere(x,h+33,y,4,'#b7a17c');this.cylinder(x,h/2-3,y,5,6,h+6,'#66523c',this.root,8)}
+    }
+   }
+   for(const t of [.28,.72])this.box(r.x+r.w/2-250,height(t)-9,r.y+r.h*t-290,r.w+12,12,9,'#66523c');
+  }
+  for(const tunnel of level.tunnels||[]){const g=this.group(tunnel.x+tunnel.w/2-250,0,tunnel.y+tunnel.h/2-290),color=id===2?'#a495c1':id===13?'#e3f2ed':id===9?'#a5cfc2':'#d4c394';for(const side of [-1,1])this.box(side*(tunnel.w/2-5),28,0,12,56,tunnel.h,color,g);const arch=this.mesh(new THREE.TorusGeometry(tunnel.w/2-5,7,8,24,Math.PI),color,g);arch.position.set(0,50,tunnel.h/2);const back=arch.clone();back.geometry=arch.geometry;back.position.z=-tunnel.h/2;g.add(back);this.box(0,tunnel.height+24,0,tunnel.w+8,10,tunnel.h,color,g);this.friendly(g,id===2?'SPOOKY SHORTCUT!':'THROUGH THE TUNNEL!')}
   this.spinnerMeshes=(level.spinners||[]).map(spinner=>{this.cylinder(spinner.x-250,18,spinner.y-290,8,11,26,'#dcc38e');const g=this.group(spinner.x-250,19,spinner.y-290);this.box(0,0,0,spinner.length*2,16,spinner.r*2,id===3?'#bb9ad4':id===5?'#e6a0b7':'#eeb775',g);this.sphere(0,8,0,9,'#fff1c4',g);for(const side of [-1,1])this.sphere(side*(spinner.length-4),0,0,9,'#fff0cf',g);return g});
 
  }

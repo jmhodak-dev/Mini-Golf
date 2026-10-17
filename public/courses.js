@@ -48,12 +48,14 @@ export function layout(id){
  // An optional moving toy sits off-center, always leaving a generous way around.
  if(![0,13,15].includes(id))level.movers=[{x:midpoint.x+38,y:midpoint.y+15,r:19,travel:22}];
  if([1,3,5,8,12,16,17].includes(id))level.spinners=[{x:midpoint.x,y:midpoint.y,length:35,r:6,speed:.006}];
- if([0,2,4,9,10,13,15].includes(id)){
-  const p={x:(path[0].x+path[1].x)/2,y:(path[0].y+path[1].y)/2};level.tunnels=[{x:p.x-65,y:p.y-35,w:130,h:70,height:76}];
-  for(const tunnel of level.tunnels)level.walls.push({x:tunnel.x,y:tunnel.y,w:10,h:tunnel.h,height:68},{x:tunnel.x+tunnel.w-10,y:tunnel.y,w:10,h:tunnel.h,height:68});
- }
  // Hills and bridges line up with vertical stretches of the actual fairway.
- for(let i=0;i<path.length-1;i++){const a=path[i],b=path[i+1];if(Math.abs(a.x-b.x)<25&&Math.abs(a.y-b.y)>170){level.ramps=[{x:a.x-64,y:Math.min(a.y,b.y)+25,w:128,h:Math.abs(a.y-b.y)-50,height:26+id%3*8}];break}}
+ for(let i=0;i<path.length-1;i++){const a=path[i],b=path[i+1];if(Math.abs(a.x-b.x)<25&&Math.abs(a.y-b.y)>170){level.ramps=[{x:a.x-79,y:Math.min(a.y,b.y)+25,w:158,h:Math.abs(a.y-b.y)-50,height:26+id%3*8}];break}}
+ // Tunnels occupy a separate straight, with entrances aligned to the shot.
+ if([0,2,4,9,10,13,15].includes(id))for(let i=path.length-2;i>=0;i--){const a=path[i],b=path[i+1],y=(a.y+b.y)/2;
+  if(a.x===b.x&&Math.abs(a.y-b.y)>170&&!level.ramps.some(r=>Math.abs(a.x-r.x-r.w/2)<80&&y>r.y-40&&y<r.y+r.h+40)){
+   const t={x:a.x-79,y:y-35,w:158,h:70,height:76};level.tunnels.push(t);level.walls.push({x:t.x,y:t.y,w:10,h:t.h,height:90},{x:t.x+t.w-10,y:t.y,w:10,h:t.h,height:90});break;
+  }
+ }
  if([6,7,11,14,17].includes(id)){const a=pointAlong(path,.3),b=pointAlong(path,.67);level.portals=[{...a},{...b}]}
  if([1,5,7,12,16].includes(id))level.pads=[{x:midpoint.x,y:midpoint.y+30,r:18,vx:dx/d*5,vy:dy/d*5}];
  return level;

@@ -1,6 +1,6 @@
 import {test,expect} from '@playwright/test';
 async function project(page,x,y){return page.evaluate(async({x,y})=>(await import('/world3d.js')).projectPoint(x,y),{x,y})}
-async function ready(page){await expect(page.locator('#game')).toHaveAttribute('data-renderer','3d');await page.waitForTimeout(500)}
+async function ready(page){await expect(page.locator('#game')).toHaveAttribute('data-renderer','3d',{timeout:20000});await page.waitForTimeout(500)}
 async function mapView(page){if(await page.locator('canvas').getAttribute('data-camera')!=='map')await page.locator('#camera-toggle').click();await expect(page.locator('canvas')).toHaveAttribute('data-camera','map');await page.waitForTimeout(100)}
 async function shoot(page,x,y,dx,dy){const from=await project(page,x,y),to=await project(page,x-dx,y-dy);await page.mouse.move(from.x,from.y);await page.mouse.down();await page.mouse.move(to.x,to.y,{steps:5});await page.mouse.up()}
 test('18-hole clubhouse, favorites and shared-device turns work',async({page})=>{

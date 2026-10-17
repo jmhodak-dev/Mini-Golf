@@ -1,5 +1,5 @@
 import * as THREE from './vendor/three.js';
-import {nearestFairway} from './physics.js';
+import {nearestFairway,groundHeight} from './physics.js';
 import {pointAlong,courses} from './courses.js';
 const rngFor=seed=>()=>{seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296};
 function position(level,f,side=0){const p=pointAlong(level.path,f),near=nearestFairway(level,p.x,p.y),d=Math.hypot(near.dx,near.dy);return{x:p.x-near.dy/d*side-250,z:p.y+near.dx/d*side-290}}
@@ -11,12 +11,17 @@ export function buildFairway(w,level){
  for(let i=0;i<level.path.length-1;i++){
   const a=level.path[i],b=level.path[i+1],length=Math.hypot(b.x-a.x,b.y-a.y),angle=Math.atan2(b.x-a.x,b.y-a.y),g=w.group((a.x+b.x)/2-250,0,(a.y+b.y)/2-290);g.rotation.y=angle;
   w.box(0,-5,0,level.width+8,18,length,w.palette[2],g);const top=w.box(0,3,0,level.width,6,length,turf,g);top.material=grass;
-  for(let s=0;s<=length;s+=13)for(const side of [-1,1]){const t=s/length,x=a.x+(b.x-a.x)*t+(b.y-a.y)/length*level.width/2*side,y=a.y+(b.y-a.y)*t-(b.x-a.x)/length*level.width/2*side;if(nearestFairway(level,x,y).distance>level.width/2-2)stones.push({x:x-250,y:9,z:y-290,s:1})}
+  for(let s=0;s<=length;s+=9)for(const side of [-1,1]){const t=s/length,x=a.x+(b.x-a.x)*t+(b.y-a.y)/length*level.width/2*side,y=a.y+(b.y-a.y)*t-(b.x-a.x)/length*level.width/2*side;if(nearestFairway(level,x,y).distance>level.width/2-2)stones.push({x:x-250,y:11,z:y-290,rot:angle,sx:1,sy:1,sz:1})}
  }
- for(const p of level.path){w.cylinder(p.x-250,-4,p.y-290,level.width/2+4,level.width/2+8,18,w.palette[2]);const top=w.cylinder(p.x-250,3,p.y-290,level.width/2,level.width/2,6,turf);top.material=grass;for(let i=0;i<40;i++){const a=i*Math.PI/20,x=p.x+Math.cos(a)*level.width/2,y=p.y+Math.sin(a)*level.width/2;if(nearestFairway(level,x,y).distance>level.width/2-2)stones.push({x:x-250,y:9,z:y-290,s:1})}}
- instances(w,new THREE.SphereGeometry(5.5,8,6),edge,stones);
+ for(const p of level.path){w.cylinder(p.x-250,-4,p.y-290,level.width/2+4,level.width/2+8,18,w.palette[2]);const top=w.cylinder(p.x-250,3,p.y-290,level.width/2,level.width/2,6,turf);top.material=grass;for(let i=0;i<56;i++){const a=i*Math.PI/28,x=p.x+Math.cos(a)*level.width/2,y=p.y+Math.sin(a)*level.width/2;if(nearestFairway(level,x,y).distance>level.width/2-2)stones.push({x:x-250,y:11,z:y-290,rot:-a,sx:1,sy:1,sz:1})}}
+ instances(w,new THREE.BoxGeometry(8,14,9),edge,stones);
+ // Recessed tee markers, distance plates, and planting at each bend.
+ for(const [index,p] of level.path.entries()){
+  if(index===0)for(const side of [-1,1])w.cylinder(p.x+side*32-250,8,p.y-290,4,4,4,'#f3eee0',w.root,12);
+  if(index>0&&index<level.path.length-1){const g=w.group(p.x-250,0,p.y-290);for(const side of [-1,1]){w.box(side*(level.width/2+18),1,0,22,18,44,'#716b5d',g);w.box(side*(level.width/2+18),11,0,18,3,40,'#483e2d',g);for(let j=0;j<4;j++){w.sphere(side*(level.width/2+18),17,j*9-14,7,'#66804c',g);w.sphere(side*(level.width/2+18),23,j*9-14,2,index%2?'#e5c36c':'#b78da9',g)}}}
+ }
  // Ground arrows mark the next bend, with no compulsory shortcut or narrow jump.
- for(let i=1;i<level.path.length;i++){const a=level.path[i-1],b=level.path[i],dx=b.x-a.x,dy=b.y-a.y,length=Math.hypot(dx,dy);for(let f=.25;f<.9;f+=.25){const g=w.group(a.x+dx*f-250,7,a.y+dy*f-290);g.rotation.y=Math.atan2(dx,dy);const shape=new THREE.Shape();shape.moveTo(0,-9);shape.lineTo(-8,3);shape.lineTo(-3,3);shape.lineTo(-3,11);shape.lineTo(3,11);shape.lineTo(3,3);shape.lineTo(8,3);shape.closePath();const arrow=w.mesh(new THREE.ShapeGeometry(shape),'#f4e6a4',g);arrow.rotation.x=-Math.PI/2;arrow.rotation.z=Math.PI;arrow.castShadow=false}}
+ for(let i=1;i<level.path.length;i++){const a=level.path[i-1],b=level.path[i],dx=b.x-a.x,dy=b.y-a.y,length=Math.hypot(dx,dy);for(let f=.25;f<.9;f+=.25){const g=w.group(a.x+dx*f-250,7+groundHeight(level,a.x+dx*f,a.y+dy*f),a.y+dy*f-290);g.rotation.y=Math.atan2(dx,dy);const shape=new THREE.Shape();shape.moveTo(0,-9);shape.lineTo(-8,3);shape.lineTo(-3,3);shape.lineTo(-3,11);shape.lineTo(3,11);shape.lineTo(3,3);shape.lineTo(8,3);shape.closePath();const arrow=w.mesh(new THREE.ShapeGeometry(shape),'#f4e6a4',g);arrow.rotation.x=-Math.PI/2;arrow.rotation.z=Math.PI;arrow.castShadow=false}}
 }
 function terrain(w,level,id){
  const rnd=rngFor(id*541+77),snow=id===13,space=id===7,night=[2,7,11].includes(id);const ocean=[4,9].includes(id);const base=snow?'#dce9ed':id===6?'#846f65':night?'#5c6273':ocean?'#82bec0':'#7ca36b';

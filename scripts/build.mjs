@@ -12,4 +12,4 @@ const previews=await Promise.all(Array.from({length:courses.length},async(_,id)=
 html=html.replace('<script src="/socket.io/socket.io.js"></script><script type="module" src="/app.js"></script>',()=>`<script>window.WILD_STANDALONE=true;window.WILD_PREVIEWS=${JSON.stringify(previews)};${bundle.outputFiles[0].text.replace(/<\/script/gi,'<\\/script')}</script>`);
 const notices=await Promise.all(['public/vendor/THREE-LICENSE.txt','public/fonts/OFL-Outfit.txt','public/fonts/OFL-DM-Sans.txt'].map(p=>readFile(p,'utf8')));
 html=html.replace('</body>',()=>`<script type="text/plain" id="third-party-notices">${notices.join('\n\n')}</script></body>`);
-await writeFile('downloads/Wild-Putt.html',html);await writeFile('downloads/Wild-Putt-World-Tour-v3.html',html);console.log('Bundled 3D engine and standalone downloadable game.');
+await writeFile('downloads/Wild-Putt.html',html);await writeFile('downloads/Wild-Putt-World-Tour-v4.html',html);console.log('Bundled 3D engine and standalone downloadable game.');

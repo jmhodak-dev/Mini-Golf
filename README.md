@@ -54,7 +54,7 @@ The new standalone game is `downloads/Wild-Putt.html`. It embeds its graphics en
 
 ### Little Golfer mode
 
-Little Golfer is the default. It offers a larger cup and gently guides slow near misses into the hole when the path is clear. There are no penalties or stroke limits. Wide arched bridges provide a route over obstacles, and several worlds have roomy tunnels and slow rotating sweepers. Optional stars and shortcuts add challenge without blocking progress. Choose Classic in the start dialog for a smaller cup and no near-cup help. A live room uses its host’s mode.
+Little Golfer is the default. It offers a larger cup and gently guides slow near misses into the hole when the path is clear. There are no penalties or stroke limits. Wide timber bridges have solid side rails and smooth, level approaches, and several worlds have roomy tunnels and slow rotating sweepers. Optional stars and shortcuts add challenge without blocking progress. Choose Classic in the start dialog for a smaller cup and no near-cup help. A live room uses its host’s mode.
 
 ## Host on your own PC
 
@@ -63,7 +63,7 @@ Install Node.js LTS (22 or newer), extract the source archive, and double-click 
 The underlying command is `npm run host`. LAN browser play and live rooms work over the home-network HTTP address. HTTPS hosting is needed for installable/offline phone app features. See `PLAY-ON-YOUR-PC.txt` for family setup instructions.
 
 
-## World Tour (version 3)
+## World Tour (version 4)
 
 Play a full 18-hole round through 18 different winding fairways, with scores carried between holes. Each fairway is surrounded by a full 3D environment: forest valleys, islands, a brick city, a spooky village, a candy park, a volcano, outer space, an underwater reef, snowfields, a dragon playground, jungle waterfalls, a carnival and the finale celebration. Dinosaur worlds feature flying pterosaurs and flocks of birds, roaming dinosaurs, forest mountains and waterfalls. There are now three additional worlds: Dragon’s Playground, Waterfall Wonder, and Carnival Chaos.
 
@@ -72,3 +72,5 @@ The default Ball POV camera follows from behind the ball. Pull down from the bal
 Full rounds work with shared-device players and live rooms. The live-room host advances to the next hole once everyone finishes. Practice mode starts any individual hole. Little Golfer remains the default: wide fairways, gentle rails, free resets, big cups, near-miss help, and no time pressure.
 
 The scene renderer adapts resolution for software graphics, disposes old scene geometry/materials/textures and instancing buffers between holes, and honors reduced-motion preferences. Ambient and scenery animations pause under reduced motion; ball movement and camera follow remain available. All assets are bundled locally.
+
+Version 4 refines the tracks with timber planks, bridge supports and handrails, stone curbs, tee markers, and planted corners. Bridge side collisions prevent lateral entry or exit; tunnels occupy separate aligned straights. Regression tests cover both bridge sides at multiple shot speeds and open entrances on every bridge.

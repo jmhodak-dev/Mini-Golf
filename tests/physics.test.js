@@ -8,3 +8,33 @@ test('space portals transport the ball and have an anti-loop cooldown',()=>{cons
 test('Little Golfer helps a near miss while Classic leaves it alone',()=>{const l=layout(0),classic=layout(0);classic.easy=false;const b={x:l.hole.x+39,y:l.hole.y,vx:.2,vy:0};assert.equal(run({...b},l).result.done,true);assert.equal(run({...b},classic).result.done,false)});
 test('raised bridge surfaces match the physical ramp height',()=>{const l=layout(0),r=l.ramps[0];assert.ok(r);assert.ok(groundHeight(l,r.x+r.w/2,r.y+r.h/2)>20);assert.equal(groundHeight(l,l.start.x,l.start.y),0)});
 test('dynamic bumpers really move, and all holes keep optional star rewards',()=>{for(let id=0;id<18;id++){const l=layout(id);assert.equal(l.stars.length,3);if(l.movers.length)assert.notDeepEqual(movingBumpers(l,0),movingBumpers(l,100))}});
+test('bridge side rails block lateral entry and exit at every raised deck',()=>{
+ for(let id=0;id<18;id++)for(const r of layout(id).ramps){
+  const l=layout(id);l.movers=[];l.spinners=[];l.portals=[];l.pads=[];
+  for(const side of [-1,1])for(const speed of [2,16]){
+   const edge=side<0?r.x:r.x+r.w;
+   const inside={x:edge-side*18,y:r.y+r.h/2,vx:side*speed,vy:0};
+   for(let t=0;t<12;t++)advanceBall(inside,l,t);
+   assert.ok(side<0?inside.x>=r.x+12:inside.x<=r.x+r.w-12,`hole ${id}: ball escaped bridge`);
+   // Isolate the bridge from the outer fairway so entry is tested from both sides.
+   const isolated={...l,path:null,bounds:{minX:-1000,maxX:2000,minY:-1000,maxY:2000},walls:[]};
+   const outside={x:edge+side*20,y:r.y+r.h/2,vx:-side*speed,vy:0};
+   for(let t=0;t<12;t++)advanceBall(outside,isolated,t);
+   assert.ok(side<0?outside.x<r.x:outside.x>r.x+r.w,`hole ${id}: entered through side`);
+   assert.equal(groundHeight(isolated,outside.x,outside.y),0);
+  }
+  const center=r.x+r.w/2;
+  assert.ok(groundHeight(l,center,r.y+.01)<.001,'approach has no sudden height step');
+ }
+});
+test('bridges remain open end to end, with tunnels on separate straights',()=>{
+ for(let id=0;id<18;id++){
+  const l=layout(id);l.movers=[];l.spinners=[];l.portals=[];l.pads=[];
+  l.hole={x:-900,y:-900};
+  for(const r of l.ramps){const b={x:r.x+r.w/2,y:r.y-16,vx:0,vy:10};let crossed=false;
+   for(let t=0;t<300;t++){advanceBall(b,l,t);if(b.y>r.y+r.h+12){crossed=true;break}}
+   assert.ok(crossed,`hole ${id}: entrance or exit blocked`);
+   for(const tunnel of l.tunnels)assert.ok(tunnel.x+tunnel.w<=r.x||tunnel.x>=r.x+r.w||tunnel.y+tunnel.h<=r.y||tunnel.y>=r.y+r.h);
+  }
+ }
+});
