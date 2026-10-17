@@ -1,0 +1,14 @@
+import {build} from 'esbuild';
+import {readFile,writeFile,mkdir,copyFile} from 'node:fs/promises';
+await mkdir('public/vendor',{recursive:true});await mkdir('downloads',{recursive:true});
+await build({entryPoints:['node_modules/three/build/three.module.js'],bundle:true,format:'esm',minify:true,outfile:'public/vendor/three.js',legalComments:'eof'});
+await copyFile('node_modules/three/LICENSE','public/vendor/THREE-LICENSE.txt');
+const bundle=await build({entryPoints:['public/app.js'],bundle:true,format:'iife',minify:true,write:false,legalComments:'eof'});
+let html=await readFile('public/index.html','utf8');let css=await readFile('public/style.css','utf8');
+for(const font of ['outfit','dm-sans'])css=css.replace(`/fonts/${font}.woff2`,'data:font/woff2;base64,'+(await readFile(`public/fonts/${font}.woff2`)).toString('base64'));
+html=html.replace('<link rel="stylesheet" href="/style.css">',()=>`<style>${css}</style>`).replace(/<link rel="(?:manifest|icon|apple-touch-icon)"[^>]*>/g,'');
+const previews=await Promise.all(Array.from({length:15},async(_,id)=>'data:image/webp;base64,'+(await readFile(`public/previews/course-${id}.webp`)).toString('base64')));
+html=html.replace('<script src="/socket.io/socket.io.js"></script><script type="module" src="/app.js"></script>',()=>`<script>window.WILD_STANDALONE=true;window.WILD_PREVIEWS=${JSON.stringify(previews)};${bundle.outputFiles[0].text.replace(/<\/script/gi,'<\\/script')}</script>`);
+const notices=await Promise.all(['public/vendor/THREE-LICENSE.txt','public/fonts/OFL-Outfit.txt','public/fonts/OFL-DM-Sans.txt'].map(p=>readFile(p,'utf8')));
+html=html.replace('</body>',()=>`<script type="text/plain" id="third-party-notices">${notices.join('\n\n')}</script></body>`);
+await writeFile('downloads/Wild-Putt.html',html);console.log('Bundled 3D engine and standalone downloadable game.');

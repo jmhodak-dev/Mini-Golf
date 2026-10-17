@@ -1,0 +1,32 @@
+WILD PUTT — PLAY ON YOUR PC AND PHONE
+
+WINDOWS
+1. Install the LTS version of Node.js from https://nodejs.org (22 or newer).
+2. Extract the entire ZIP into a folder. Do not run it from inside the ZIP.
+3. Double-click start-windows.cmd. The first run downloads the server packages.
+4. Keep the window open. It prints the Wi-Fi/Ethernet address of your PC.
+5. On a phone connected to the SAME Wi-Fi, open that address in Safari or Chrome.
+6. Choose Play with friends, create a room, and join the room from other phones.
+
+If Windows Firewall asks, allow Node.js on your PRIVATE/HOME network.
+If a phone cannot connect, check that it uses the same home Wi-Fi, not mobile
+network or a guest Wi-Fi that isolates devices. The PC must remain awake.
+
+MAC
+Install Node.js LTS, extract the ZIP, open Terminal in the extracted folder,
+and run: bash start-mac.sh
+Then follow the phone steps above.
+
+PLAY JUST ON A COMPUTER, WITHOUT INSTALLING NODE
+Download the separate Wild-Putt.html file and open it in a modern browser.
+It contains the complete 3D game and supports 1–4 players sharing one device.
+Separate-device multiplayer requires the PC-hosted or Render-hosted server.
+
+PHONE APP INSTALLATION
+The home Wi-Fi address supports browser play and multiplayer. Reliable offline
+installation as a phone app requires HTTPS hosting (for example Render).
+Do not forward router ports just to play at home; it is not needed.
+
+GOLF FOR LITTLE PEOPLE
+Little Golfer mode is the default: big cups, gentle near-miss help, free resets,
+wide bridges, and no time/stroke limits. Stars are optional. Tap the characters!

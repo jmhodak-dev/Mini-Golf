@@ -1,0 +1,11 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import {advanceBall,movingBumpers} from '../public/physics.js';import {layout} from '../public/courses.js';
+function run(ball,level,phase=0){let result;for(let i=0;i<2000;i++){result=advanceBall(ball,level,phase+i);assert.ok(Number.isFinite(ball.x)&&Number.isFinite(ball.y));if(result.stopped)return{ball,result}}throw Error('Shot never settled')}
+test('two peers simulate moving obstacles identically regardless of rendering',()=>{const l=layout(0),a={x:250,y:420,vx:0,vy:-6},b={...a};assert.deepEqual(run(a,l,750),run(b,l,750))});
+test('solid walls and bumper centers do not trap or corrupt a ball',()=>{const l=layout(0);for(const ball of [{x:260,y:275,vx:2,vy:-1},{x:250,y:365,vx:0,vy:-3}]){const {ball:b}=run(ball,l);assert.ok(b.x>=49&&b.x<=451&&b.y>=49&&b.y<=531)}});
+test('boost pads launch the ball with a cooldown',()=>{const l=layout(0),b={x:220,y:440,vx:.5,vy:0};const r=advanceBall(b,l,0);assert.ok(r.events.includes('boost'));assert.ok(b.vy<-6);assert.equal(b.boostCooldown,90)});
+test('space portals teleport once and preserve velocity',()=>{const l=layout(7),b={x:110,y:175,vx:1,vy:0};const r=advanceBall(b,l,0);assert.ok(r.events.includes('portal'));assert.ok(Math.abs(b.x-382)<5);assert.ok(Math.abs(b.y-410)<5);assert.equal(b.portalCooldown,100);assert.ok(b.vx>0)});
+test('a controlled putt sinks and an overspeed pass does not',()=>{const l=layout(0);assert.equal(advanceBall({x:405,y:120,vx:0,vy:-2},l,0).done,true);assert.equal(advanceBall({x:405,y:125,vx:0,vy:-16},l,0).done,false)});
+test('every world has stars, a boost pad and a genuinely moving bumper',()=>{for(let id=0;id<15;id++){const l=layout(id);assert.equal(l.stars.length,3);assert.ok(l.pads.length);assert.notDeepEqual(movingBumpers(l,0),movingBumpers(l,100));}});
+test('Little Golfer gently rescues a near miss while classic preserves the miss',()=>{const assisted=layout(0),classic=layout(0);classic.easy=false;assert.equal(run({x:444,y:110,vx:.2,vy:0},assisted).result.done,true);assert.equal(run({x:444,y:110,vx:.2,vy:0},classic).result.done,false)});
+test('a raised bridge carries the ball over a wall',()=>{const level=layout(0),flat=layout(0);flat.ramps=[];const a={x:275,y:290,vx:0,vy:-3},b={...a};advanceBall(a,level,0);advanceBall(b,flat,0);assert.ok(a.vy<0);assert.ok(b.vy>0)});
