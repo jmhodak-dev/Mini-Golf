@@ -19,7 +19,7 @@ Then follow the phone steps above.
 
 PLAY JUST ON A COMPUTER, WITHOUT INSTALLING NODE
 Download the separate Wild-Putt.html file and open it in a modern browser.
-It contains the complete 3D game and supports 1–4 players sharing one device.
+It contains the complete 18-hole 3D game and supports 1–4 players sharing one device.
 Separate-device multiplayer requires the PC-hosted or Render-hosted server.
 
 PHONE APP INSTALLATION
@@ -30,3 +30,9 @@ Do not forward router ports just to play at home; it is not needed.
 GOLF FOR LITTLE PEOPLE
 Little Golfer mode is the default: big cups, gentle near-miss help, free resets,
 wide bridges, and no time/stroke limits. Stars are optional. Tap the characters!
+
+WORLD TOUR CONTROLS
+The new Ball POV camera follows behind your ball. Pull down from the ball to
+shoot forward. Drag the scenery to look around. Use Map view for an overhead
+look, and the round target button to recenter. Choose the full 18-hole round
+or practice any individual world. The host advances live rooms between holes.

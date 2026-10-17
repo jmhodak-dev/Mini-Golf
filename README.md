@@ -1,6 +1,6 @@
 # Wild Putt
 
-A cheerful mini golf web app for the whole family. Includes 15 single-hole courses, dinosaur and building-brick worlds, Halloween, Six Seven, touch pull-back shooting, sound effects, favorites, and friendly scoring.
+A cheerful mini golf web app for the whole family. Includes 18 distinct holes, dinosaur and building-brick worlds, Halloween, Six Seven, touch pull-back shooting, sound effects, favorites, and friendly scoring.
 
 ## Run
 
@@ -61,3 +61,14 @@ Little Golfer is the default. It offers a larger cup and gently guides slow near
 Install Node.js LTS (22 or newer), extract the source archive, and double-click `start-windows.cmd` on Windows. On macOS, run `bash start-mac.sh` in the extracted directory. The launcher installs production dependencies, starts the game, and prints the Wi-Fi/Ethernet address to open on phones connected to the same home network. Keep the PC awake and the terminal open. If Windows Firewall prompts, allow Node.js on the private/home network. No router port forwarding is needed for home play.
 
 The underlying command is `npm run host`. LAN browser play and live rooms work over the home-network HTTP address. HTTPS hosting is needed for installable/offline phone app features. See `PLAY-ON-YOUR-PC.txt` for family setup instructions.
+
+
+## World Tour (version 3)
+
+Play a full 18-hole round through 18 different winding fairways, with scores carried between holes. Each fairway is surrounded by a full 3D environment: forest valleys, islands, a brick city, a spooky village, a candy park, a volcano, outer space, an underwater reef, snowfields, a dragon playground, jungle waterfalls, a carnival and the finale celebration. Dinosaur worlds feature flying pterosaurs and flocks of birds, roaming dinosaurs, forest mountains and waterfalls. There are now three additional worlds: Dragon’s Playground, Waterfall Wonder, and Carnival Chaos.
+
+The default Ball POV camera follows from behind the ball. Pull down from the ball to shoot forward, or pull diagonally to aim. Drag empty scenery to look around. The Recenter button points the camera back along the fairway. Map view shows the whole hole and supports the original ground-based pull-back aiming. The camera freezes during aiming so the target does not move under your finger.
+
+Full rounds work with shared-device players and live rooms. The live-room host advances to the next hole once everyone finishes. Practice mode starts any individual hole. Little Golfer remains the default: wide fairways, gentle rails, free resets, big cups, near-miss help, and no time pressure.
+
+The scene renderer adapts resolution for software graphics, disposes old scene geometry/materials/textures and instancing buffers between holes, and honors reduced-motion preferences. Ambient and scenery animations pause under reduced motion; ball movement and camera follow remain available. All assets are bundled locally.
