@@ -63,7 +63,7 @@ Install Node.js LTS (22 or newer), extract the source archive, and double-click 
 The underlying command is `npm run host`. LAN browser play and live rooms work over the home-network HTTP address. HTTPS hosting is needed for installable/offline phone app features. See `PLAY-ON-YOUR-PC.txt` for family setup instructions.
 
 
-## World Tour (version 4)
+## World Tour (version 5)
 
 Play a full 18-hole round through 18 different winding fairways, with scores carried between holes. Each fairway is surrounded by a full 3D environment: forest valleys, islands, a brick city, a spooky village, a candy park, a volcano, outer space, an underwater reef, snowfields, a dragon playground, jungle waterfalls, a carnival and the finale celebration. Dinosaur worlds feature flying pterosaurs and flocks of birds, roaming dinosaurs, forest mountains and waterfalls. There are now three additional worlds: Dragon’s Playground, Waterfall Wonder, and Carnival Chaos.
 
@@ -74,3 +74,10 @@ Full rounds work with shared-device players and live rooms. The live-room host a
 The scene renderer adapts resolution for software graphics, disposes old scene geometry/materials/textures and instancing buffers between holes, and honors reduced-motion preferences. Ambient and scenery animations pause under reduced motion; ball movement and camera follow remain available. All assets are bundled locally.
 
 Version 4 refines the tracks with timber planks, bridge supports and handrails, stone curbs, tee markers, and planted corners. Bridge side collisions prevent lateral entry or exit; tunnels occupy separate aligned straights. Regression tests cover both bridge sides at multiple shot speeds and open entrances on every bridge.
+
+
+Version 5 rebuilds the visual presentation with locally generated color and normal maps for turf, masonry, timber, bark and dinosaur skin; directional shadows, sky reflections, a cloud shader and textured terrain. Trees use instanced leaves and branches; dinosaurs have breathing, linked tail joints, distance-driven leg movement, moving jaws and natural head motion. Birds have articulated wing tips and gliding cycles. Grass responds to wind, sails billow, ghost hems ripple, and waterfall mist drifts and fades. The ball has recessed geometric dimples and rotates about its own centre based on distance travelled. The perspective camera uses a narrower lens and a subtle speed response, while staying fixed during aiming.
+
+The art remains a stylized family game, with the existing forgiving physics and 18-hole layouts. Visual detail is batched to reduce draw calls; software rendering uses a smaller resolution, a smaller distant forest, a static shadow map, and a baked sky. Hardware rendering keeps animated shadows and procedural clouds. The enhanced materials use a bounded texture budget tested across all 18 worlds. No external art downloads or accounts are required to play offline.
+
+Current downloads: `Wild-Putt-World-Tour-v5.html` for shared-device play and `Wild-Putt-World-Tour-v5-PC.zip` for home hosting. Extract the PC ZIP and run the included launcher to play on phones on the same Wi-Fi.

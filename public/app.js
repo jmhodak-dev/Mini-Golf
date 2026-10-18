@@ -62,6 +62,6 @@ $('#hud-toggle').onclick=()=>$('#game-dialog').classList.toggle('show-help');
 let physicsTime=performance.now(),lastRender=0;
 function physicsClock(){const now=performance.now();accumulator+=Math.min(1000,now-physicsTime);physicsTime=now;while(accumulator>=1000/60){step();accumulator-=1000/60}}
 setInterval(physicsClock,1000/60);
-function loop(time){if(game&&world&&time-lastRender>=1000/30){const dt=Math.min(.1,(time-lastRender)/1000);lastRender=time;world.render(game,aim,time,dt)}requestAnimationFrame(loop)}requestAnimationFrame(loop);
+function loop(time){if(game&&world&&time-lastRender>=1000/(world.software?10:30)){const dt=Math.min(.1,(time-lastRender)/1000);lastRender=time;world.render(game,aim,time,dt)}requestAnimationFrame(loop)}requestAnimationFrame(loop);
 function toast(text){$('#toast').textContent=text;$('#toast').style.display='block';setTimeout(()=>$('#toast').style.display='none',3000)}render();
 if(!window.WILD_STANDALONE&&'serviceWorker'in navigator)navigator.serviceWorker.register('/sw.js').catch(()=>{});
